@@ -10,6 +10,8 @@ class Address
     public string $postal_code;
     public string $country_code;
 
+    public ?string $residential;
+
     /**
      * @param $street_lines
      * @return $this
@@ -78,7 +80,16 @@ class Address
         if (!empty($this->country_code)) {
             $address['countryCode'] = $this->country_code;
         }
+        if (!empty($this->residential)) {
+            $data['residential'] = $this->residential;
+        }
 
         return $address;
+    }
+
+    public function setResidential(?string $residential): Address
+    {
+        $this->residential = $residential;
+        return $this;
     }
 }

@@ -53,7 +53,7 @@ class CreateRatesRequestTest extends BaseTestCase
     {
         $createRatesRequest = (new CreateRatesRequest())
             ->setAccessToken((string)$this->auth->authorize()->access_token)
-            ->setAccountNumber(740561073)
+            ->setAccountNumber($_ENV['ACCOUNT'] ?? '')
             ->setServiceType(ServiceType::_FEDEX_GROUND)
             ->setRecipient(
                 (new Person)

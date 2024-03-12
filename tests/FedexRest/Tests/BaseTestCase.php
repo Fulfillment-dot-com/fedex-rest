@@ -22,12 +22,27 @@ class BaseTestCase extends TestCase
         if($raw) {
             $this->auth = (new Authorize)
                 ->asRaw()
-                ->setClientId($_ENV['CLIENT_ID'] ?? '')
-                ->setClientSecret($_ENV['CLIENT_SECRET'] ?? '');
+                ->setClientId($this->getClientId())
+                ->setClientSecret($this->getClientSecret());
         } else {
             $this->auth = (new Authorize)
-                ->setClientId($_ENV['CLIENT_ID'] ?? '')
-                ->setClientSecret($_ENV['CLIENT_SECRET'] ?? '');
+                ->setClientId($this->getClientId())
+                ->setClientSecret($this->getClientSecret());
         }
+    }
+
+    protected function getAccountNumber(): string
+    {
+        return $_ENV['ACCOUNT'] ?? '';
+    }
+
+    protected function getClientId(): string
+    {
+        return $_ENV['CLIENT_ID'] ?? '';
+    }
+
+    protected function getClientSecret(): string
+    {
+        return $_ENV['CLIENT_SECRET'] ?? '';
     }
 }

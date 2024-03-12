@@ -8,6 +8,7 @@ use FedexRest\Services\Ship\Entity\Label;
 use FedexRest\Entity\Person;
 use FedexRest\Services\Ship\Entity\ShipmentSpecialServices;
 use FedexRest\Services\Ship\Entity\ShippingChargesPayment;
+use FedexRest\Services\Ship\Entity\SmartPostInfoDetail;
 use FedexRest\Services\Ship\Entity\Value;
 use FedexRest\Exceptions\MissingAccountNumberException;
 use FedexRest\Services\Ship\Exceptions\MissingLabelException;
@@ -43,6 +44,7 @@ class CreateShipment extends AbstractRequest
     protected string $preferredCurrency = '';
     protected int $totalPackageCount;
     protected CustomsClearanceDetail $customsClearanceDetail;
+    protected ?SmartPostInfoDetail $smartPostInfoDetail;
 
     /**
      * {@inheritDoc}
@@ -506,9 +508,11 @@ class CreateShipment extends AbstractRequest
         if (!empty($this->totalPackageCount)) {
             $data['totalPackageCount'] = $this->totalPackageCount;
         }
-
         if (!empty($this->customsClearanceDetail)) {
             $data['customsClearanceDetail'] = $this->customsClearanceDetail->prepare();
+        }
+        if (!empty($this->smartPostInfoDetail)) {
+            $data['smartPostInfoDetail'] = $this->smartPostInfoDetail->prepare();
         }
         return $data;
     }
@@ -580,6 +584,14 @@ class CreateShipment extends AbstractRequest
         return $this;
     }
 
-
+    /**
+     * @param SmartPostInfoDetail|null $smartPostInfoDetail
+     * @return CreateShipment
+     */
+    public function setSmartPostInfoDetail(?SmartPostInfoDetail $smartPostInfoDetail): CreateShipment
+    {
+        $this->smartPostInfoDetail = $smartPostInfoDetail;
+        return $this;
+    }
 
 }

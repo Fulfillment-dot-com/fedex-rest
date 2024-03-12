@@ -3,6 +3,8 @@
 namespace FedexRest\Entity;
 
 use FedexRest\Services\Ship\Entity\CustomerReference;
+use FedexRest\Services\Ship\Entity\PackageSpecialServices;
+use FedexRest\Services\Ship\Entity\Value;
 
 class Item
 {
@@ -10,6 +12,12 @@ class Item
     public ?Weight $weight;
     public ?Dimensions $dimensions;
     public array $customerReferences = [];
+
+    public ?Value $declaredValue;
+
+    public ?int $groupPackageCount;
+
+    public ?PackageSpecialServices $packageSpecialServices;
 
     /**
      * @param string $itemDescription
@@ -51,6 +59,36 @@ class Item
         return $this;
     }
 
+    /**
+     * @param Value|null $declaredValue
+     * @return Item
+     */
+    public function setDeclaredValue(?Value $declaredValue): Item
+    {
+        $this->declaredValue = $declaredValue;
+        return $this;
+    }
+
+    /**
+     * @param int|null $groupPackageCount
+     * @return Item
+     */
+    public function setGroupPackageCount(?int $groupPackageCount): Item
+    {
+        $this->groupPackageCount = $groupPackageCount;
+        return $this;
+    }
+
+    /**
+     * @param PackageSpecialServices|null $packageSpecialServices
+     * @return Item
+     */
+    public function setPackageSpecialServices(?PackageSpecialServices $packageSpecialServices): Item
+    {
+        $this->packageSpecialServices = $packageSpecialServices;
+        return $this;
+    }
+
     public function prepare(): array
     {
         $data = [];
@@ -74,6 +112,18 @@ class Item
             }
 
             $data['customerReferences'] = $customerReferences;
+        }
+
+        if (!empty($this->declaredValue)) {
+            $data['declaredValue'] = $this->declaredValue->prepare();
+        }
+
+        if (!empty($this->groupPackageCount)) {
+            $data['groupPackageCount'] = $this->groupPackageCount;
+        }
+
+        if (!empty($this->packageSpecialServices)) {
+            $data['packageSpecialServices'] = $this->packageSpecialServices->prepare();
         }
 
         return $data;

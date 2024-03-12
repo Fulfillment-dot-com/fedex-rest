@@ -12,6 +12,7 @@ use FedexRest\Services\AbstractRequest;
 use FedexRest\Services\Ship\Entity\Label;
 use FedexRest\Services\Ship\Entity\ShipmentSpecialServices;
 use FedexRest\Services\Ship\Entity\ShippingChargesPayment;
+use FedexRest\Services\Ship\Type\CarrierCode;
 use GuzzleHttp\Exception\GuzzleException;
 
 class CreateRatesRequest extends AbstractRequest
@@ -31,6 +32,7 @@ class CreateRatesRequest extends AbstractRequest
     protected int $totalWeight;
     protected string $preferredCurrency = '';
     protected int $totalPackageCount;
+    protected array $carrierCodes = [];
 
     /**
      * {@inheritDoc}
@@ -281,6 +283,26 @@ class CreateRatesRequest extends AbstractRequest
 
     /**
      * @return array
+     * @see CarrierCode
+     */
+    public function getCarrierCodes(): array
+    {
+        return $this->carrierCodes;
+    }
+
+    /**
+     * @param array $carrierCodes
+     * @return CreateRatesRequest
+     * @see CarrierCode
+     */
+    public function setCarrierCodes(array $carrierCodes): CreateRatesRequest
+    {
+        $this->carrierCodes = $carrierCodes;
+        return $this;
+    }
+
+    /**
+     * @return array
      */
     public function getRequestedShipment(): array
     {
@@ -327,6 +349,10 @@ class CreateRatesRequest extends AbstractRequest
 
         if (!empty($this->totalPackageCount)) {
             $data['totalPackageCount'] = $this->totalPackageCount;
+        }
+
+        if (!empty($this->carrierCodes)) {
+            $data['carrierCodes'] = $this->carrierCodes;
         }
 
         return $data;
