@@ -45,7 +45,7 @@ class CreateTagRequestTest extends BaseTestCase
 
         $request = (new CreateTagRequest)
             ->setAccessToken((string) $this->auth->authorize()->access_token)
-            ->setAccountNumber(740561073)
+            ->setAccountNumber($this->getAccountNumber())
             ->setServiceType(ServiceType::_FEDEX_GROUND)
             ->setRecipients(
                 (new Person)->setPersonName('Lorem')
@@ -68,7 +68,7 @@ class CreateTagRequestTest extends BaseTestCase
     {
         $request = (new CreateTagRequest)
             ->setAccessToken((string) $this->auth->authorize()->access_token)
-            ->setAccountNumber(740561073)
+            ->setAccountNumber($this->getAccountNumber())
             ->setServiceType(ServiceType::_FEDEX_GROUND)
             ->setPackagingType(PackagingType::_YOUR_PACKAGING)
             ->setPickupType(PickupType::_DROPOFF_AT_FEDEX_LOCATION)
@@ -106,7 +106,7 @@ class CreateTagRequestTest extends BaseTestCase
         try {
             $request = (new CreateTagRequest())
                 ->setAccessToken((string) $this->auth->authorize()->access_token)
-                ->setAccountNumber(740561073)
+                ->setAccountNumber($this->getAccountNumber())
                 ->setServiceType(ServiceType::_FEDEX_GROUND)
                 ->setPackagingType(PackagingType::_YOUR_PACKAGING)
                 ->setPickupType(PickupType::_DROPOFF_AT_FEDEX_LOCATION)

@@ -14,6 +14,7 @@ use FedexRest\Services\Rates\CreateRatesRequest;
 use FedexRest\Services\Ship\CreateShipment;
 use FedexRest\Services\Ship\Entity\Label;
 use FedexRest\Services\Ship\Entity\ShippingChargesPayment;
+use FedexRest\Services\Ship\Type\CarrierCode;
 use FedexRest\Services\Ship\Type\ImageType;
 use FedexRest\Services\Ship\Type\LabelDocOptionType;
 use FedexRest\Services\Ship\Type\LabelResponseOptionsType;
@@ -22,6 +23,7 @@ use FedexRest\Services\Ship\Type\LinearUnits;
 use FedexRest\Services\Ship\Type\PackagingType;
 use FedexRest\Services\Ship\Type\PickupType;
 use FedexRest\Services\Ship\Type\ServiceType;
+use FedexRest\Services\Ship\Type\VolumeUnits;
 use FedexRest\Services\Ship\Type\WeightUnits;
 use FedexRest\Tests\BaseTestCase;
 
@@ -53,7 +55,7 @@ class CreateRatesRequestTest extends BaseTestCase
     {
         $createRatesRequest = (new CreateRatesRequest())
             ->setAccessToken((string)$this->auth->authorize()->access_token)
-            ->setAccountNumber($_ENV['ACCOUNT'] ?? '')
+            ->setAccountNumber($this->getAccountNumber())
             ->setServiceType(ServiceType::_FEDEX_GROUND)
             ->setRecipient(
                 (new Person)
@@ -88,7 +90,7 @@ class CreateRatesRequestTest extends BaseTestCase
     {
         $request = (new CreateRatesRequest)
             ->setAccessToken((string)$this->auth->authorize()->access_token)
-            ->setAccountNumber(740561073)
+            ->setAccountNumber($this->getAccountNumber())
             ->setServiceType(ServiceType::_FEDEX_GROUND)
             ->setPackagingType(PackagingType::_YOUR_PACKAGING)
             ->setPickupType(PickupType::_DROPOFF_AT_FEDEX_LOCATION)
@@ -150,14 +152,14 @@ class CreateRatesRequestTest extends BaseTestCase
     {
         $request = (new CreateRatesRequest)
             ->setAccessToken((string)$this->auth->authorize()->access_token)
-            ->setAccountNumber(740561073)
+            ->setAccountNumber($this->getAccountNumber())
             ->setRateRequestTypes('ACCOUNT', 'LIST')
             ->setPickupType(PickupType::_DROPOFF_AT_FEDEX_LOCATION)
             ->setShipper(
                 (new Person)
                     ->withAddress(
                         (new Address())
-                            ->setPostalCode('38017')
+                            ->setPostalCode('31420')
                             ->setCountryCode('US')
                     )
             )
@@ -165,7 +167,7 @@ class CreateRatesRequestTest extends BaseTestCase
                 (new Person)
                     ->withAddress(
                         (new Address())
-                            ->setPostalCode('75063')
+                            ->setPostalCode('19053-1912')
                             ->setCountryCode('US')
                     )
             )
@@ -178,6 +180,78 @@ class CreateRatesRequestTest extends BaseTestCase
             );
 
         $request = $request->request();
+
+        $this->assertObjectHasProperty('transactionId', $request);
+        $this->assertObjectNotHasProperty('errors', $request);
+        $this->assertObjectHasProperty('output', $request);
+
+        $output = $request->output;
+        $this->assertNotEmpty($output->rateReplyDetails);
+        $rate = $output->rateReplyDetails[0];
+        $this->assertEquals('FIRST_OVERNIGHT', $rate->serviceType);
+        $this->assertNotEmpty($rate->serviceName);
+        $this->assertEquals('YOUR_PACKAGING', $rate->packagingType);
+        $this->assertNotEmpty($rate->ratedShipmentDetails);
+        $this->assertNotEmpty($rate->operationalDetail);
+        $this->assertNotEmpty($rate->signatureOptionType);
+        $this->assertNotEmpty($rate->serviceDescription);
+    }
+
+    /**
+     * @covers \FedexRest\Services\Rates\CreateRatesRequest::request
+     * @return void
+     * @throws MissingAccountNumberException
+     * @throws \FedexRest\Exceptions\MissingAccessTokenException
+     * @throws \FedexRest\Exceptions\MissingAuthCredentialsException
+     * @throws \FedexRest\Exceptions\MissingLineItemException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function testFdcRequest(): void
+    {
+        $request = (new CreateRatesRequest)
+            ->setAccessToken((string)$this->auth->authorize()->access_token)
+            ->setAccountNumber($this->getAccountNumber())
+            ->setRateRequestTypes('ACCOUNT')
+            ->setServiceType(ServiceType::_GROUND_HOME_DELIVERY)
+            ->setPickupType(PickupType::_USE_SCHEDULED_PICKUP)
+            ->setPackagingType(PackagingType::_YOUR_PACKAGING)
+            ->setShipper(
+                (new Person)
+                    ->withAddress(
+                        (new Address())
+                            ->setPostalCode('31420')
+                            ->setCountryCode('US')
+                    )
+            )
+            ->setRecipient(
+                (new Person)
+                    ->withAddress(
+                        (new Address())
+                            ->setPostalCode('19053-1912')
+                            ->setCountryCode('US')
+                        ->setResidential(true)
+                    )
+            )
+
+            ->setLineItems((new Item())
+                ->setWeight(
+                    (new Weight())
+                        ->setUnit(WeightUnits::_OUNCE)
+                        ->setValue(3)
+                )
+                ->setDimensions((new Dimensions())
+                    ->setHeight(9)
+                    ->setWidth(6)
+                    ->setLength(6)
+                    ->setUnits(LinearUnits::_INCH))
+            );
+
+        $request = $request
+            ->setTap(static function($request) {
+                $tapBody = (string) $request->getBody();
+                $f = 1;
+            })
+            ->request();
 
         $this->assertObjectHasProperty('transactionId', $request);
         $this->assertObjectNotHasProperty('errors', $request);

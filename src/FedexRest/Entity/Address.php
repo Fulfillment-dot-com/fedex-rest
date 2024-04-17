@@ -4,13 +4,31 @@ namespace FedexRest\Entity;
 
 class Address
 {
-    public array $street_lines;
-    public string $city;
-    public string $state_or_province;
-    public string $postal_code;
-    public string $country_code;
+    /**
+     * @var array
+     */
+    public $street_lines;
+    /**
+     * @var string
+     */
+    public $city;
+    /**
+     * @var string
+     */
+    public $state_or_province;
+    /**
+     * @var string
+     */
+    public $postal_code;
+    /**
+     * @var string
+     */
+    public $country_code;
 
-    public ?string $residential;
+    /**
+     * @var string|null
+     */
+    public $residential;
 
     /**
      * @param $street_lines
@@ -81,7 +99,7 @@ class Address
             $address['countryCode'] = $this->country_code;
         }
         if (!empty($this->residential)) {
-            $data['residential'] = $this->residential;
+            $address['residential'] = $this->residential;
         }
 
         return $address;

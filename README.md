@@ -966,7 +966,7 @@ stdClass Object
 ```php
 $request = (new CreateTagRequest())
                 ->setAccessToken((string) $this->auth->authorize()->access_token)
-                ->setAccountNumber(740561073)
+                ->setAccountNumber($this->getAccountNumber())
                 ->setServiceType(ServiceType::_FEDEX_GROUND)
                 ->setPackagingType(PackagingType::_YOUR_PACKAGING)
                 ->setPickupType(PickupType::_DROPOFF_AT_FEDEX_LOCATION)
@@ -1387,7 +1387,7 @@ stdClass Object
 ```php
 $request = (new CreateRatesRequest)
             ->setAccessToken((string)$this->auth->authorize()->access_token)
-            ->setAccountNumber(740561073)
+            ->setAccountNumber($this->getAccountNumber())
             ->setRateRequestTypes('ACCOUNT', 'LIST')
             ->setPickupType(PickupType::_DROPOFF_AT_FEDEX_LOCATION)
             ->setShipper(

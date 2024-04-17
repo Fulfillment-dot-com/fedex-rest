@@ -17,22 +17,70 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class CreateRatesRequest extends AbstractRequest
 {
-    protected Person $shipper;
-    protected Person $recipient;
-    protected Label $label;
-    protected ?string $shipDateStamp;
-    protected ?string $serviceType;
-    protected array $rateRequestTypes;
-    protected string $packagingType = '';
-    protected string $pickupType = '';
-    protected int $accountNumber;
-    protected array $lineItems = [];
-    protected ShipmentSpecialServices $shipmentSpecialServices;
-    protected ShippingChargesPayment $shippingChargesPayment;
-    protected int $totalWeight;
-    protected string $preferredCurrency = '';
-    protected int $totalPackageCount;
-    protected array $carrierCodes = [];
+    /**
+     * @var Person
+     */
+    protected $shipper;
+    /**
+     * @var Person
+     */
+    protected $recipient;
+    /**
+     * @var Label
+     */
+    protected $label;
+    /**
+     * @var string|null
+     */
+    protected $shipDateStamp;
+    /**
+     * @var string|null
+     */
+    protected $serviceType;
+    /**
+     * @var array
+     */
+    protected $rateRequestTypes;
+    /**
+     * @var string
+     */
+    protected $packagingType = '';
+    /**
+     * @var string
+     */
+    protected $pickupType = '';
+    /**
+     * @var int
+     */
+    protected $accountNumber;
+    /**
+     * @var array
+     */
+    protected $lineItems = [];
+    /**
+     * @var ShipmentSpecialServices
+     */
+    protected $shipmentSpecialServices;
+    /**
+     * @var ShippingChargesPayment
+     */
+    protected $shippingChargesPayment;
+    /**
+     * @var int
+     */
+    protected $totalWeight;
+    /**
+     * @var string
+     */
+    protected $preferredCurrency = '';
+    /**
+     * @var int
+     */
+    protected $totalPackageCount;
+    /**
+     * @var array
+     */
+    protected $carrierCodes = [];
 
     /**
      * {@inheritDoc}
@@ -351,21 +399,21 @@ class CreateRatesRequest extends AbstractRequest
             $data['totalPackageCount'] = $this->totalPackageCount;
         }
 
-        if (!empty($this->carrierCodes)) {
-            $data['carrierCodes'] = $this->carrierCodes;
-        }
-
         return $data;
     }
 
     public function prepare(): array
     {
-        return [
+        $data = [
             'accountNumber' => [
                 'value' => $this->accountNumber,
             ],
             'requestedShipment' => $this->getRequestedShipment(),
         ];
+        if (!empty($this->carrierCodes)) {
+            $data['carrierCodes'] = $this->carrierCodes;
+        }
+        return $data;
     }
 
     /**
