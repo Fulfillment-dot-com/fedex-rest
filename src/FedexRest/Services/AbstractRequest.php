@@ -18,23 +18,9 @@ abstract class AbstractRequest implements RequestInterface
 {
     use switchableEnv, rawable;
 
-    /**
-     * @var string|mixed
-     */
-    public $api_endpoint = '';
-    /**
-     * @var string
-     */
-    protected $access_token;
-    /**
-     * @var Client
-     */
-    protected $http_client;
-
-    /**
-     * @var Closure
-     */
-    protected $tap;
+    public string $api_endpoint = '';
+    protected string $access_token;
+    protected Client $http_client;
 
     /**
      * AbstractRequest constructor.

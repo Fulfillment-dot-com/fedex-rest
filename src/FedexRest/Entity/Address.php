@@ -4,31 +4,13 @@ namespace FedexRest\Entity;
 
 class Address
 {
-    /**
-     * @var array
-     */
-    public $street_lines;
-    /**
-     * @var string
-     */
-    public $city;
-    /**
-     * @var string
-     */
-    public $state_or_province;
-    /**
-     * @var string
-     */
-    public $postal_code;
-    /**
-     * @var string
-     */
-    public $country_code;
+    public array $street_lines;
+    public string $city;
+    public string $state_or_province;
+    public string $postal_code;
+    public string $country_code;
 
-    /**
-     * @var string|null
-     */
-    public $residential;
+    public ?string $residential;
 
     /**
      * @param $street_lines
